@@ -22,6 +22,7 @@ python = "^3.10"
 python-dotenv = "*"
 tenacity = "*"
 uvloop = "*"
+flake8 = "<5.0.0"
 
 [tool.poetry.dev-dependencies]
 asgi-lifespan = "*"

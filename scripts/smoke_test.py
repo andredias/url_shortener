@@ -3,7 +3,7 @@
 from subprocess import check_call
 from time import sleep
 
-from httpx import get
+from httpx import post
 
 
 def run_smoke_test() -> None:
@@ -18,10 +18,11 @@ def run_smoke_test() -> None:
     )
     # fmt: on
     sleep(2)
+    url = 'https://codelab.pronus.io'
     try:
-        result = get('http://localhost:5000/hello')
-        assert result.status_code == 200
-        assert result.json() == {'message': 'Hello World'}
+        result = post('http://localhost:5000/', json={'url': url})
+        assert result.status_code == 201
+        assert isinstance(result.json(), str)
         print('Smoke test passed!')
     finally:
         # fmt: off
