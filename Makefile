@@ -2,8 +2,8 @@ SHELL := /bin/bash -O globstar
 
 
 run: check_env
-	@ docker-compose up -d; \
-	trap 'docker-compose down' INT; \
+	@ docker compose up -d; \
+	trap 'docker compose down' INT; \
 	hypercorn --reload --config=hypercorn.toml 'url_shortener.main:app'
 
 

@@ -6,7 +6,7 @@ from subprocess import check_call
 
 def run_tests() -> None:
     os.environ['ENV'] = 'testing'
-    check_call(['docker-compose', 'up', '-d'])
+    check_call(['docker', 'compose', 'up', '-d'])
     try:
         check_call(
             [
@@ -19,7 +19,7 @@ def run_tests() -> None:
             ]
         )
     finally:
-        check_call(['docker-compose', 'down'])
+        check_call(['docker', 'compose', 'down'])
 
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ def run_smoke_test() -> None:
     # fmt: off
     check_call(
         [
-            'docker-compose',
+            'docker', 'compose',
             '-f', 'docker-compose.yml',
             '-f', 'docker-compose.smoke_test.yml',
             'up', '-d',
@@ -28,7 +28,7 @@ def run_smoke_test() -> None:
         # fmt: off
         check_call(
             [
-                'docker-compose',
+                'docker', 'compose',
                 '-f', 'docker-compose.yml',
                 '-f', 'docker-compose.smoke_test.yml',
                 'down',
