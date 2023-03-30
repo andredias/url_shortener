@@ -5,9 +5,7 @@ from math import ceil
 
 
 def to_base64(number: int) -> str:
-    number_in_bytes = number.to_bytes(
-        ceil(number.bit_length() / 8), byteorder='big'
-    )
+    number_in_bytes = number.to_bytes(ceil(number.bit_length() / 8), byteorder='big')
     code = urlsafe_b64encode(number_in_bytes).rstrip(b'=')
     return code.decode()
 
