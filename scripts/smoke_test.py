@@ -3,6 +3,7 @@
 from subprocess import check_call
 from time import sleep
 
+from fastapi import status
 from httpx import post
 
 
@@ -21,7 +22,7 @@ def run_smoke_test() -> None:
     url = 'https://codelab.pronus.io'
     try:
         result = post('http://localhost:5000/', json={'url': url})
-        assert result.status_code == 201
+        assert result.status_code == status.HTTP_201_CREATED
         assert isinstance(result.json(), str)
         print('Smoke test passed!')
     finally:

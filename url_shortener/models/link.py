@@ -37,5 +37,4 @@ async def get(id_: int) -> LinkInfo | None:
 async def insert(url: str) -> int:
     stmt = Link.insert().values(url=url)
     logger.debug(stmt)
-    id_ = await db.execute(stmt)
-    return id_
+    return await db.execute(stmt)

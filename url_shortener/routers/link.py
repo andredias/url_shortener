@@ -16,7 +16,7 @@ async def get_encoded_url(code: str) -> str:
     try:
         id_ = from_base64(code)
     except binascii.Error:
-        raise HTTPException(422, 'invalid encoded url value')
+        raise HTTPException(422, 'invalid encoded url value') from None
     link = await get(id_)
     if link:
         logger.info(f'{code} -> {link.url}')

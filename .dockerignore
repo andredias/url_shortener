@@ -1,5 +1,9 @@
 *
+!alembic*
+!entrypoint.sh
+!migrate_database.py
 !pyproject.toml
 !poetry.lock
 !hypercorn.toml
 !url_shortener/
+**/__pycache__

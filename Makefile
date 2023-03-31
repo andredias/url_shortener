@@ -1,35 +1,33 @@
 SHELL := /bin/bash -O globstar
 
 
-run: check_env
-	@ docker compose up -d; \
+run_dev: check_env
+	@ docker compose up db -d; \
 	trap 'docker compose down' INT; \
-	hypercorn --reload --config=hypercorn.toml 'url_shortener.main:app'
+	ENV=development poetry run ./entrypoint.sh
 
 
 test: check_env
-	@ scripts/test_project.py
+	docker compose up -d;
+	pytest -x \
+		--cov-report=term-missing --cov-report=html --cov-branch \
+		--cov=url_shortener
 
 
 lint:
 	@echo
-	isort --diff -c .
+	ruff .
 	@echo
 	blue --check --diff --color .
 	@echo
-	flake8 .
-	@echo
 	mypy .
-	@echo
-	bandit -qr url_shortener/
 	@echo
 	pip-audit
 
 
 format:
-	isort .
+	ruff --silent --exit-zero --fix .
 	blue .
-	pyupgrade --py310-plus **/*.py
 
 
 build:

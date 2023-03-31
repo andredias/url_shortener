@@ -13,5 +13,4 @@ def to_base64(number: int) -> str:
 def from_base64(code: str) -> int:
     code = code.ljust(ceil(len(code) / 4) * 4, '=')  # must be multiple of 4
     number_in_bytes = urlsafe_b64decode(code.encode())
-    number = int.from_bytes(number_in_bytes, byteorder='big')
-    return number
+    return int.from_bytes(number_in_bytes, byteorder='big')
