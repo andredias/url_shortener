@@ -2,17 +2,17 @@
 
 GIT_PRE_COMMIT='#!/bin/bash
 cd $(git rev-parse --show-toplevel)
-poetry run make lint
+uv run make lint
 '
 
 GIT_PRE_PUSH='#!/bin/bash
 cd $(git rev-parse --show-toplevel)
-poetry run make test
+uv run make test
 '
 
 HG_HOOKS='[hooks]
-precommit.lint = (cd `hg root`; poetry run make lint)
-pre-push.test = (cd `hg root`; poetry run make test)
+precommit.lint = (cd `hg root`; uv run make lint)
+pre-push.test = (cd `hg root`; uv run make test)
 '
 
 if [ -d '.git' ]; then

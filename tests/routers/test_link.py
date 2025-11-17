@@ -5,7 +5,6 @@ from url_shortener.models.link import insert
 
 
 async def test_get_link(client: AsyncClient) -> None:
-
     # non-existent code
     code = 'AbCdEf'
     resp = await client.get(f'/{code}')

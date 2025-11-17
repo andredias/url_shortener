@@ -4,30 +4,28 @@ SHELL := /bin/bash -O globstar
 run_dev: check_env
 	@ docker compose up db -d; \
 	trap 'docker compose down' INT; \
-	ENV=development poetry run ./entrypoint.sh
+	ENV=development uv run ./entrypoint.sh
 
 
 test: check_env
 	docker compose up -d;
-	pytest -x \
+	uv run pytest -x \
 		--cov-report=term-missing --cov-report=html --cov-branch \
 		--cov=url_shortener
 
 
 lint:
+	ruff check --diff .
 	@echo
-	ruff .
-	@echo
-	blue --check --diff --color .
+	ruff format --diff .
 	@echo
 	mypy .
-	@echo
-	pip-audit
 
 
 format:
-	ruff --silent --exit-zero --fix .
-	blue .
+	ruff check --silent --exit-zero --fix .
+	@echo
+	ruff format .
 
 
 build:

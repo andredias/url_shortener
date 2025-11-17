@@ -25,12 +25,13 @@ async def _get(query: Select) -> LinkInfo | None:
 
 
 async def get_by_url(url: str) -> LinkInfo | None:
-    query = Link.select(Link.c.url == url)
+    logger.debug(url)
+    query = Link.select().where(Link.c.url == url)
     return await _get(query)
 
 
 async def get(id_: int) -> LinkInfo | None:
-    query = Link.select(Link.c.id == id_)
+    query = Link.select().where(Link.c.id == id_)
     return await _get(query)
 
 

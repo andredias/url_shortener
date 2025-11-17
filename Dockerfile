@@ -1,10 +1,7 @@
-FROM python:3.10-slim as builder
+# syntax=docker/dockerfile:1
+
+FROM python:3.14-slim AS builder
 LABEL maintainer="André Felipe Dias <andref.dias@gmail.com>"
-
-USER root
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y --no-install-recommends build-essential libffi-dev libxml2-dev \
@@ -12,36 +9,33 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-ENV POETRY_VERSION=1.4.1
-RUN curl https://install.python-poetry.org | python -
+# ref: https://github.com/astral-sh/uv-docker-example/blob/main/multistage.Dockerfile
 
-RUN python -m venv /venv
-ENV PATH=/venv/bin:/root/.local/bin:${PATH}
+COPY --from=ghcr.io/astral-sh/uv:0.9.8 /uv /uvx /bin/
+
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
-COPY pyproject.toml poetry.lock ./
-RUN . /venv/bin/activate; \
-    poetry install --no-dev
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --locked --no-install-project --no-dev
 
 # ---------------------------------------------------------
 
-FROM python:3.10-slim as final
-
+FROM python:3.14-slim AS final
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y --no-install-recommends libpq-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /venv /venv
-ENV PATH=/venv/bin:${PATH}
-
 WORKDIR /app
+COPY --from=builder --chown=nobody:nogroup /app/.venv ./.venv
+ENV PATH=/app/.venv/bin:${PATH}
+
+COPY --chown=nobody:nogroup --exclude=pyproject.toml --exclude=uv.lock . ./
+
 USER nobody
-COPY --chown=nobody:nogroup entrypoint.sh migrate_database.py hypercorn.toml alembic.ini ./
-COPY --chown=nobody:nogroup alembic/ ./alembic
-COPY --chown=nobody:nogroup url_shortener/ ./url_shortener
 
 EXPOSE 5000
 

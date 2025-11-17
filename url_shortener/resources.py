@@ -1,4 +1,8 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from databases import Database
+from fastapi import FastAPI
 from loguru import logger
 from sqlalchemy import create_engine
 from tenacity import RetryError, retry, stop_after_delay, wait_exponential
@@ -7,6 +11,15 @@ from . import config
 from .models import metadata
 
 db = Database(config.DATABASE_URL, force_rollback=config.TESTING)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator:  # noqa: ARG001
+    await startup()
+    try:
+        yield
+    finally:
+        await shutdown()
 
 
 async def startup() -> None:
