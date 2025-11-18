@@ -8,10 +8,11 @@ run_dev: check_env
 
 
 test: check_env
-	docker compose up -d;
+	docker compose up db -d;
 	uv run pytest -x \
 		--cov-report=term-missing --cov-report=html --cov-branch \
 		--cov=url_shortener
+	docker compose down
 
 
 lint:
